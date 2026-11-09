@@ -50,7 +50,7 @@ The project focuses on implementing core Java concepts, GUI development, databas
 
 **Sohom Roy**
 
-- GitHub: [Sohom-Roy](https://github.com/Sohom-Roy)
+- Email: [Sohom-Roy](sohomroyofficial2025@gmail.com)
 - LinkedIn: [Sohom Roy](https://www.linkedin.com/in/sohom-roy-009588314/)
 
 ---
