@@ -29,15 +29,6 @@ The project focuses on implementing core Java concepts, GUI development, databas
 | MySQL | Database management |
 | JDBC | Database connectivity |
 
-## ⚙️ Prerequisites
-
-Before running the project, make sure you have installed:
-
-- Java JDK 17 or later
-- MySQL Server
-- Maven
-- An IDE such as IntelliJ IDEA or Eclipse
-
 ## 🎯 Learning Objectives
 
 - Understanding Java Swing and AWT.
