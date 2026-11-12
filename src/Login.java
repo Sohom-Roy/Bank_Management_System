@@ -28,7 +28,7 @@ public class Login extends JFrame implements ActionListener {
         add(text);
 
         JLabel card = new JLabel("CARD NO:");
-        card.setFont(new Font("Rale way",Font.BOLD,30));
+        card.setFont(new Font("Times New Roman",Font.BOLD,30));
         card.setBounds(130,160,160,40);
         card.setForeground(Color.BLACK);
         add(card);
@@ -39,8 +39,8 @@ public class Login extends JFrame implements ActionListener {
         add(card_txt);
 
         JLabel pin = new JLabel("PIN:");
-        pin.setFont(new Font("Rale way",Font.BOLD,30));
-        pin.setBounds(220,220,150,40);
+        pin.setFont(new Font("Times New Roman",Font.BOLD,30));
+        pin.setBounds(215,220,150,40);
         pin.setForeground(Color.BLACK);
         add(pin);
 
