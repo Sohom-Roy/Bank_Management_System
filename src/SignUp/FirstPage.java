@@ -2,14 +2,19 @@ package SignUp;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Random;
 import com.toedter.calendar.JDateChooser;
 import java.util.Date;
 
-public class FirstPage extends JFrame {
+public class FirstPage extends JFrame implements ActionListener {
     JTextField nametxt,fathernametxt,emailtxt,addresstxt,citytxt,pintxt,districttxt;
     JRadioButton male,female,other,married,unmarried;
     JComboBox<String> statetxt;
+    JButton clear,exit,next;
+    ButtonGroup genderGroup,maritalGroup;
+    JDateChooser dateChooser;
 
     FirstPage(){
 
@@ -64,7 +69,7 @@ public class FirstPage extends JFrame {
         dob.setForeground(Color.BLACK);
         add(dob);
 
-        JDateChooser dateChooser = new JDateChooser();
+        dateChooser = new JDateChooser();
         dateChooser.setBounds(270, 185, 250, 25);
         dateChooser.setDateFormatString("dd-MM-yyyy");
         dateChooser.setMaxSelectableDate(new Date());
@@ -94,7 +99,7 @@ public class FirstPage extends JFrame {
         other.setFont(new Font("Arial", Font.PLAIN, 16));
         add(other);
 
-        ButtonGroup genderGroup = new ButtonGroup();
+        genderGroup = new ButtonGroup();
         genderGroup.add(male);
         genderGroup.add(female);
         genderGroup.add(other);
@@ -128,7 +133,7 @@ public class FirstPage extends JFrame {
         unmarried.setFont(new Font("Arial", Font.PLAIN, 16));
         add(unmarried);
 
-        ButtonGroup maritalGroup = new ButtonGroup();
+        maritalGroup = new ButtonGroup();
         maritalGroup.add(married);
         maritalGroup.add(unmarried);
 
@@ -230,7 +235,7 @@ public class FirstPage extends JFrame {
         statetxt.setSelectedIndex(0);
         add(statetxt);
 
-        JButton next = new JButton("NEXT");
+        next = new JButton("NEXT");
         next.setBounds(400, 570, 100, 30);
         next.setBackground(Color.BLACK);
         next.setForeground(Color.WHITE);
@@ -238,20 +243,22 @@ public class FirstPage extends JFrame {
         next.setFocusPainted(false);
         add(next);
 
-        JButton clear = new JButton("CLEAR");
+        clear = new JButton("CLEAR");
         clear.setBounds(250, 570, 100, 30);
         clear.setBackground(Color.BLACK);
         clear.setForeground(Color.WHITE);
         clear.setFont(new Font("Arial", Font.BOLD, 14));
         clear.setFocusPainted(false);
+        clear.addActionListener(this);
         add(clear);
 
-        JButton exit = new JButton("EXIT");
+        exit = new JButton("EXIT");
         exit.setBounds(100, 570, 100, 30);
         exit.setBackground(Color.BLACK);
         exit.setForeground(Color.WHITE);
         exit.setFont(new Font("Arial", Font.BOLD, 14));
         exit.setFocusPainted(false);
+        exit.addActionListener(this);
         add(exit);
 
 
@@ -259,6 +266,37 @@ public class FirstPage extends JFrame {
         setSize(600,700);
         setLocation(350,10);
         setVisible(true);
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==clear){
+            nametxt.setText("");
+            fathernametxt.setText("");
+            emailtxt.setText("");
+            addresstxt.setText("");
+            citytxt.setText("");
+            districttxt.setText("");
+            pintxt.setText("");
+
+            genderGroup.clearSelection();
+            maritalGroup.clearSelection();
+
+            statetxt.setSelectedIndex(0);
+            dateChooser.setDate(null);
+        } else if (e.getSource()==exit) {
+            int confirm = JOptionPane.showConfirmDialog(
+                    null,
+                    "Are you sure you want to exit?",
+                    "Exit Confirmation",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                dispose();
+            }
+        }
 
     }
 
