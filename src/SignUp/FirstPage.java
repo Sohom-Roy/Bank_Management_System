@@ -3,6 +3,8 @@ package SignUp;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
+import com.toedter.calendar.JDateChooser;
+import java.util.Date;
 
 public class FirstPage extends JFrame {
     JTextField nametxt,fathernametxt,emailtxt,addresstxt,citytxt,pintxt,districttxt;
@@ -61,6 +63,12 @@ public class FirstPage extends JFrame {
         dob.setBounds(80,180,150,40);
         dob.setForeground(Color.BLACK);
         add(dob);
+
+        JDateChooser dateChooser = new JDateChooser();
+        dateChooser.setBounds(270, 185, 250, 25);
+        dateChooser.setDateFormatString("dd-MM-yyyy");
+        dateChooser.setMaxSelectableDate(new Date());
+        add(dateChooser);
 
         JLabel gender = new JLabel("Gender:");
         gender.setFont(new Font("Times New Roman",Font.PLAIN,22));
