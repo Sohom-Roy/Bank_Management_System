@@ -13,6 +13,7 @@ public class ThirdPage extends JFrame implements ActionListener {
     long formNumber;
 
     JComboBox<String> accountType, relationship;
+
     JTextField deposit, nomineeName, nomineeAddress;
 
     JRadioButton atmYes, atmNo;
@@ -21,15 +22,119 @@ public class ThirdPage extends JFrame implements ActionListener {
     JRadioButton smsYes, smsNo;
     JRadioButton chequeYes, chequeNo;
 
-    ButtonGroup atmGroup, internetGroup, mobileGroup, smsGroup, chequeGroup;
+    ButtonGroup atmGroup, internetGroup, mobileGroup,
+            smsGroup, chequeGroup;
 
     JDateChooser nomineeDob;
 
     JButton previous, clear, next;
 
-    ThirdPage(long formNumber) {
+    SignupData data;
 
-        this.formNumber = formNumber;
+    // Constructor using shared SignupData
+    ThirdPage(SignupData data) {
+
+        this.data = data;
+        this.formNumber = data.formNumber;
+
+        initializePage();
+
+        loadData();
+
+        setVisible(true);
+    }
+
+    // Constructor for testing with form number
+    ThirdPage(long formNumber) {
+        this(new SignupData(formNumber));
+    }
+
+    // Save Page 3 data
+    private void saveData() {
+
+        data.accountType = accountType.getSelectedIndex() == 0
+                ? null : accountType.getSelectedItem().toString();
+
+        data.initialDeposit = deposit.getText().trim();
+
+        data.atmCard = atmYes.isSelected();
+
+        data.internetBanking = internetYes.isSelected();
+
+        data.mobileBanking = mobileYes.isSelected();
+
+        data.smsAlert = smsYes.isSelected();
+
+        data.chequeBook = chequeYes.isSelected();
+
+        data.nomineeName = nomineeName.getText().trim();
+
+        data.nomineeRelation = relationship.getSelectedIndex() == 0
+                ? null : relationship.getSelectedItem().toString();
+
+        data.nomineeDob = nomineeDob.getDate();
+
+        data.nomineeAddress = nomineeAddress.getText().trim();
+    }
+
+    // Restore previously saved Page 3 data
+    private void loadData() {
+
+        if (data.accountType != null) {
+            accountType.setSelectedItem(data.accountType);
+        }
+
+        deposit.setText(
+                data.initialDeposit == null ? "" : data.initialDeposit
+        );
+
+        // ATM Card
+        if (data.atmCard)
+            atmYes.setSelected(true);
+        else
+            atmNo.setSelected(true);
+
+        // Internet Banking
+        if (data.internetBanking)
+            internetYes.setSelected(true);
+        else
+            internetNo.setSelected(true);
+
+        // Mobile Banking
+        if (data.mobileBanking)
+            mobileYes.setSelected(true);
+        else
+            mobileNo.setSelected(true);
+
+        // SMS Alerts
+        if (data.smsAlert)
+            smsYes.setSelected(true);
+        else
+            smsNo.setSelected(true);
+
+        // Cheque Book
+        if (data.chequeBook)
+            chequeYes.setSelected(true);
+        else
+            chequeNo.setSelected(true);
+
+        nomineeName.setText(
+                data.nomineeName == null ? "" : data.nomineeName
+        );
+
+        if (data.nomineeRelation != null) {
+            relationship.setSelectedItem(data.nomineeRelation);
+        }
+
+        nomineeDob.setDate(data.nomineeDob);
+
+        nomineeAddress.setText(
+                data.nomineeAddress == null ? "" : data.nomineeAddress
+        );
+    }
+
+    // Initialize Page 3 UI
+    private void initializePage() {
 
         setLayout(null);
 
@@ -304,8 +409,7 @@ public class ThirdPage extends JFrame implements ActionListener {
 
         setSize(600, 720);
         setLocation(350, 10);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     @Override
@@ -326,17 +430,23 @@ public class ThirdPage extends JFrame implements ActionListener {
             relationship.setSelectedIndex(0);
             nomineeDob.setDate(null);
             nomineeAddress.setText("");
+            saveData();
 
         } else if (e.getSource() == previous) {
 
-            new SecondPage(formNumber);
+            saveData();
+
+            new SecondPage(data);
+
             dispose();
 
         } else if (e.getSource() == next) {
 
-            new FourthPage(formNumber);
-            dispose();
+            saveData();
 
+            new FourthPage(data);
+
+            dispose();
         }
     }
 

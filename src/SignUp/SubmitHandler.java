@@ -1,26 +1,18 @@
+
 package SignUp;
 
 import javax.swing.*;
-import java.io.File;
 import java.security.SecureRandom;
 
 public class SubmitHandler {
 
-    public static void handleSubmit(
-            JFrame frame,
-            long formNumber,
-            File panFile,
-            File aadhaarFile,
-            File photoFile,
-            File signatureFile,
-            boolean declarationAccepted
-    ) {
+    public static void handleSubmit(JFrame frame, SignupData data) {
 
         // Validate uploaded documents
-        if (panFile == null ||
-                aadhaarFile == null ||
-                photoFile == null ||
-                signatureFile == null) {
+        if (data.panFile == null ||
+                data.aadhaarFile == null ||
+                data.photographFile == null ||
+                data.signatureFile == null) {
 
             JOptionPane.showMessageDialog(
                     frame,
@@ -33,7 +25,8 @@ public class SubmitHandler {
         }
 
         // Validate Declaration
-        if (!declarationAccepted) {
+        if (!data.declarationAccepted) {
+
             JOptionPane.showMessageDialog(
                     frame,
                     "Please accept the declaration before submitting.",
@@ -48,13 +41,15 @@ public class SubmitHandler {
         SecureRandom random = new SecureRandom();
 
         long customerId = 10000000L + random.nextInt(90000000);
-        long accountNumber = 100000000000L + (Math.abs(random.nextLong()) % 900000000000L);
+
+        long accountNumber = 100000000000L
+                + (Math.abs(random.nextLong() % 900000000000L));
 
         // Display Success Message
         JOptionPane.showMessageDialog(
                 frame,
                 "Registration Submitted Successfully!\n\n"
-                        + "Form Number: " + formNumber + "\n"
+                        + "Form Number: " + data.formNumber + "\n"
                         + "Customer ID: " + customerId + "\n"
                         + "Account Number: " + accountNumber,
                 "Registration Successful",

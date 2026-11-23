@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
+import Pages.Welcome;
+
+import Pages.Welcome;
 import com.toedter.calendar.JDateChooser;
 import java.util.Date;
 
@@ -16,27 +19,95 @@ public class FirstPage extends JFrame implements ActionListener {
     JButton clear, exit, next;
     ButtonGroup genderGroup, maritalGroup;
     JDateChooser dateChooser;
+    SignupData data;
 
     // Form Number
     long formNumber;
 
     // Constructor for generating a new form number
-    FirstPage() {
-
-        Random ran = new Random();
-        formNumber = Math.abs(ran.nextLong() % 9000L) + 1000L;
-
-        initializePage();
+    public FirstPage() {
+        this(new SignupData(Math.abs(new Random().nextLong() % 9000L) + 1000L));
     }
 
-    // Constructor for receiving an existing form number
-    FirstPage(long formNumber) {
-
-        this.formNumber = formNumber;
-
-        initializePage();
+    public FirstPage(long formNumber) {
+        this(new SignupData(formNumber));
     }
 
+    public FirstPage(SignupData data) {
+        this.data = data;
+        this.formNumber = data.formNumber;
+        initializePage();
+        loadData();
+        setVisible(true);
+    }
+    private void saveData() {
+
+        data.name = nametxt.getText().trim();
+
+        data.fatherName = fathernametxt.getText().trim();
+
+        data.dateOfBirth = dateChooser.getDate();
+
+        data.gender = male.isSelected() ? "Male"
+                : female.isSelected() ? "Female"
+                : other.isSelected() ? "Other" : null;
+
+        data.email = emailtxt.getText().trim();
+
+        data.maritalStatus = married.isSelected() ? "Married"
+                : unmarried.isSelected() ? "Unmarried" : null;
+
+        data.address = addresstxt.getText().trim();
+
+        data.city = citytxt.getText().trim();
+
+        data.district = districttxt.getText().trim();
+
+        data.postalCode = pintxt.getText().trim();
+
+        data.state = statetxt.getSelectedIndex() == 0
+                ? null
+                : statetxt.getSelectedItem().toString();
+    }
+
+    private void loadData() {
+
+        nametxt.setText(data.name == null ? "" : data.name);
+
+        fathernametxt.setText(
+                data.fatherName == null ? "" : data.fatherName
+        );
+
+        dateChooser.setDate(data.dateOfBirth);
+
+        if ("Male".equals(data.gender)) {
+            male.setSelected(true);
+        } else if ("Female".equals(data.gender)) {
+            female.setSelected(true);
+        } else if ("Other".equals(data.gender)) {
+            other.setSelected(true);
+        }
+
+        emailtxt.setText(data.email == null ? "" : data.email);
+
+        if ("Married".equals(data.maritalStatus)) {
+            married.setSelected(true);
+        } else if ("Unmarried".equals(data.maritalStatus)) {
+            unmarried.setSelected(true);
+        }
+
+        addresstxt.setText(data.address == null ? "" : data.address);
+
+        citytxt.setText(data.city == null ? "" : data.city);
+
+        districttxt.setText(data.district == null ? "" : data.district);
+
+        pintxt.setText(data.postalCode == null ? "" : data.postalCode);
+
+        if (data.state != null) {
+            statetxt.setSelectedItem(data.state);
+        }
+    }
     // Initialize First Page
     private void initializePage() {
 
@@ -295,7 +366,7 @@ public class FirstPage extends JFrame implements ActionListener {
         add(clear);
 
         // EXIT Button
-        exit = new JButton("EXIT");
+        exit = new JButton("BACK");
         exit.setBounds(100, 570, 100, 30);
         exit.setBackground(Color.BLACK);
         exit.setForeground(Color.WHITE);
@@ -330,23 +401,18 @@ public class FirstPage extends JFrame implements ActionListener {
 
             statetxt.setSelectedIndex(0);
             dateChooser.setDate(null);
+            saveData();
 
         } else if (e.getSource() == exit) {
 
-            int confirm = JOptionPane.showConfirmDialog(
-                    null,
-                    "Are you sure you want to exit?",
-                    "Exit Confirmation",
-                    JOptionPane.YES_NO_OPTION
-            );
+            dispose();
 
-            if (confirm == JOptionPane.YES_OPTION) {
-                dispose();
-            }
+            // Open Welcome Page
+            new Welcome();
 
         } else if (e.getSource() == next) {
-
-            new SecondPage(formNumber);
+            saveData();
+            new SecondPage(data);
             dispose();
 
         }

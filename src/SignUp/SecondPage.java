@@ -1,3 +1,4 @@
+
 package SignUp;
 
 import javax.swing.*;
@@ -10,13 +11,94 @@ public class SecondPage extends JFrame implements ActionListener {
     long formNumber;
 
     JTextField pantxt, aadhaartxt;
-    JComboBox<String> religiontxt, categorytxt,incometxt, educationtxt, occupationtxt;
+
+    JComboBox<String> religiontxt, categorytxt, incometxt,
+            educationtxt, occupationtxt;
+
     JRadioButton yes, no;
     ButtonGroup seniorGroup;
+
     JButton previous, clear, next;
 
+    SignupData data;
+
+    // Constructor for shared SignupData
+    SecondPage(SignupData data) {
+
+        this.data = data;
+        this.formNumber = data.formNumber;
+
+        initializePage();
+
+        loadData();
+
+        setVisible(true);
+    }
+
+    // Constructor for testing with a form number
     SecondPage(long formNumber) {
-        this.formNumber = formNumber;
+        this(new SignupData(formNumber));
+    }
+
+    // Save Page 2 data
+    private void saveData() {
+
+        data.religion = religiontxt.getSelectedIndex() == 0
+                ? null : religiontxt.getSelectedItem().toString();
+
+        data.category = categorytxt.getSelectedIndex() == 0
+                ? null : categorytxt.getSelectedItem().toString();
+
+        data.annualIncome = incometxt.getSelectedIndex() == 0
+                ? null : incometxt.getSelectedItem().toString();
+
+        data.education = educationtxt.getSelectedIndex() == 0
+                ? null : educationtxt.getSelectedItem().toString();
+
+        data.occupation = occupationtxt.getSelectedIndex() == 0
+                ? null : occupationtxt.getSelectedItem().toString();
+
+        data.panNumber = pantxt.getText().trim();
+
+        data.aadhaarNumber = aadhaartxt.getText().trim();
+
+        data.seniorCitizen = yes.isSelected();
+    }
+
+    // Restore previously saved Page 2 data
+    private void loadData() {
+
+        if (data.religion != null)
+            religiontxt.setSelectedItem(data.religion);
+
+        if (data.category != null)
+            categorytxt.setSelectedItem(data.category);
+
+        if (data.annualIncome != null)
+            incometxt.setSelectedItem(data.annualIncome);
+
+        if (data.education != null)
+            educationtxt.setSelectedItem(data.education);
+
+        if (data.occupation != null)
+            occupationtxt.setSelectedItem(data.occupation);
+
+        pantxt.setText(
+                data.panNumber == null ? "" : data.panNumber
+        );
+
+        aadhaartxt.setText(
+                data.aadhaarNumber == null ? "" : data.aadhaarNumber
+        );
+
+        if (data.seniorCitizen)
+            yes.setSelected(true);
+        else
+            no.setSelected(true);
+    }
+
+    // Initialize Page 2 UI
+    private void initializePage() {
 
         setLayout(null);
 
@@ -36,7 +118,7 @@ public class SecondPage extends JFrame implements ActionListener {
         add(label);
 
         // Form Number
-        JLabel formno = new JLabel("FORM NUMBER: "+formNumber);
+        JLabel formno = new JLabel("FORM NUMBER: " + formNumber);
         formno.setFont(new Font("Times New Roman", Font.BOLD, 30));
         formno.setBounds(135, 15, 450, 40);
         formno.setForeground(Color.BLACK);
@@ -243,7 +325,7 @@ public class SecondPage extends JFrame implements ActionListener {
 
         setSize(600, 700);
         setLocation(350, 10);
-        setVisible(true);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     @Override
@@ -261,17 +343,23 @@ public class SecondPage extends JFrame implements ActionListener {
             aadhaartxt.setText("");
 
             seniorGroup.clearSelection();
+            saveData();
 
         } else if (e.getSource() == previous) {
 
-            new FirstPage(formNumber);
+            saveData();
+
+            new FirstPage(data);
+
             dispose();
 
         } else if (e.getSource() == next) {
 
-            new ThirdPage(formNumber);
-            dispose();
+            saveData();
 
+            new ThirdPage(data);
+
+            dispose();
         }
     }
 
@@ -279,4 +367,3 @@ public class SecondPage extends JFrame implements ActionListener {
         new SecondPage(1001);
     }
 }
-

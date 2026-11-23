@@ -10,16 +10,37 @@ import java.io.File;
 public class FourthPage extends JFrame implements ActionListener {
 
     long formNumber;
+
+    SignupData data;
+
     JLabel panStatus, aadhaarStatus, photoStatus, signatureStatus;
+
     JButton panUpload, aadhaarUpload, photoUpload, signatureUpload;
     JButton previous, clear, submit;
+
     JCheckBox declaration;
 
     File panFile, aadhaarFile, photoFile, signatureFile;
 
-    FourthPage(long formNumber) {
+    // Constructor using shared SignupData
+    FourthPage(SignupData data) {
 
-        this.formNumber = formNumber;
+        this.data = data;
+        this.formNumber = data.formNumber;
+
+        initializePage();
+        loadData();
+
+        setVisible(true);
+    }
+
+    // Constructor for testing with only form number
+    FourthPage(long formNumber) {
+        this(new SignupData(formNumber));
+    }
+
+    // Initialize all UI components
+    private void initializePage() {
 
         setLayout(null);
 
@@ -82,7 +103,6 @@ public class FourthPage extends JFrame implements ActionListener {
         aadhaarStatus.setFont(new Font("Arial", Font.PLAIN, 13));
         aadhaarStatus.setBounds(240, 200, 180, 30);
         aadhaarStatus.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
         add(aadhaarStatus);
 
         aadhaarUpload = new JButton("UPLOAD");
@@ -164,7 +184,7 @@ public class FourthPage extends JFrame implements ActionListener {
         add(clear);
 
         // SUBMIT Button
-        submit = new JButton("SUBMIT");
+        submit = new JButton("REVIEW");
         submit.setBounds(370, 570, 120, 30);
         styleButton(submit);
         submit.addActionListener(this);
@@ -175,8 +195,7 @@ public class FourthPage extends JFrame implements ActionListener {
 
         setSize(600, 680);
         setLocation(350, 10);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     // Common Button Styling
@@ -186,6 +205,44 @@ public class FourthPage extends JFrame implements ActionListener {
         button.setForeground(Color.WHITE);
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setFocusPainted(false);
+    }
+
+    // Save Page 4 data into shared SignupData object
+    private void saveData() {
+
+        data.panFile = panFile;
+        data.aadhaarFile = aadhaarFile;
+        data.photographFile = photoFile;
+        data.signatureFile = signatureFile;
+
+        data.declarationAccepted = declaration.isSelected();
+    }
+
+    // Restore previously saved Page 4 data
+    private void loadData() {
+
+        panFile = data.panFile;
+        aadhaarFile = data.aadhaarFile;
+        photoFile = data.photographFile;
+        signatureFile = data.signatureFile;
+
+        panStatus.setText(
+                panFile != null ? panFile.getName() : "No file selected"
+        );
+
+        aadhaarStatus.setText(
+                aadhaarFile != null ? aadhaarFile.getName() : "No file selected"
+        );
+
+        photoStatus.setText(
+                photoFile != null ? photoFile.getName() : "No file selected"
+        );
+
+        signatureStatus.setText(
+                signatureFile != null ? signatureFile.getName() : "No file selected"
+        );
+
+        declaration.setSelected(data.declarationAccepted);
     }
 
     // File Selection Method
@@ -214,33 +271,37 @@ public class FourthPage extends JFrame implements ActionListener {
 
         if (e.getSource() == panUpload) {
 
-            panFile = chooseFile();
+            File selectedFile = chooseFile();
 
-            if (panFile != null) {
+            if (selectedFile != null) {
+                panFile = selectedFile;
                 panStatus.setText(panFile.getName());
             }
 
         } else if (e.getSource() == aadhaarUpload) {
 
-            aadhaarFile = chooseFile();
+            File selectedFile = chooseFile();
 
-            if (aadhaarFile != null) {
+            if (selectedFile != null) {
+                aadhaarFile = selectedFile;
                 aadhaarStatus.setText(aadhaarFile.getName());
             }
 
         } else if (e.getSource() == photoUpload) {
 
-            photoFile = chooseFile();
+            File selectedFile = chooseFile();
 
-            if (photoFile != null) {
+            if (selectedFile != null) {
+                photoFile = selectedFile;
                 photoStatus.setText(photoFile.getName());
             }
 
         } else if (e.getSource() == signatureUpload) {
 
-            signatureFile = chooseFile();
+            File selectedFile = chooseFile();
 
-            if (signatureFile != null) {
+            if (selectedFile != null) {
+                signatureFile = selectedFile;
                 signatureStatus.setText(signatureFile.getName());
             }
 
@@ -258,22 +319,35 @@ public class FourthPage extends JFrame implements ActionListener {
 
             declaration.setSelected(false);
 
+            saveData();
+
         } else if (e.getSource() == previous) {
 
-            new ThirdPage(formNumber);
+            saveData();
+
+            new ThirdPage(data);
+
             dispose();
 
         } else if (e.getSource() == submit) {
 
-            SubmitHandler.handleSubmit(
-                    this,
-                    formNumber,
-                    panFile,
-                    aadhaarFile,
-                    photoFile,
-                    signatureFile,
-                    declaration.isSelected()
-            );
+            saveData();
+            if (!data.declarationAccepted) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Please accept the declaration before proceeding.",
+                        "Declaration Required",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            // Open Review Page with SignupData
+            new ReviewPage(data);
+
+            // Close FourthPage
+            dispose();
+
         }
     }
 
@@ -281,4 +355,3 @@ public class FourthPage extends JFrame implements ActionListener {
         new FourthPage(1001);
     }
 }
-
